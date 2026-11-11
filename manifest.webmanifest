@@ -1,0 +1,11 @@
+{
+  "name": "PCA Lab — Planejamento de Contratações",
+  "short_name": "PCA Lab",
+  "description": "Protótipo local para estruturar e revisar planos de contratação.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f6fa",
+  "theme_color": "#101b2d"
+}
