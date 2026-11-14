@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#101b2d" />
+  <link rel="icon" href="./assets/pca-icon.svg" type="image/svg+xml" />
   <meta name="description" content="PCA Lab — demonstração local para leitura, padronização e auditoria preliminar de planos de contratação." />
   <title>PCA Lab · Planejamento de Contratações</title>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
@@ -29,7 +30,7 @@
           <div class="local-card-icon">◈</div>
           <div><strong>Seus dados ficam aqui</strong><p>Armazenamento no navegador. Nada é enviado a um servidor.</p></div>
         </div>
-        <div class="sidebar-version">PCA Lab <span>·</span> protótipo 0.1.0</div>
+        <div class="sidebar-version">PCA Lab <span>·</span> versão 0.3.0</div>
       </div>
     </aside>
 
@@ -111,7 +112,7 @@
 
         <section id="view-detail" class="view-panel" hidden>
           <div class="detail-topline"><button class="back-link" id="back-to-docs">← Voltar aos planos</button><span id="detail-status" class="status-chip">Em revisão</span></div>
-          <div class="detail-heading"><div><div class="eyebrow">DOCUMENTO EM ANÁLISE</div><h1 id="detail-title">Plano de contratação</h1><p id="detail-subtitle">Origem e metadados do arquivo</p></div><div class="detail-actions"><button class="button button-ghost" id="delete-document-btn">Excluir plano</button><button class="button button-primary" id="save-document-btn">Salvar alterações</button></div></div>
+          <div class="detail-heading"><div><div class="eyebrow">DOCUMENTO EM ANÁLISE</div><h1 id="detail-title">Plano de contratação</h1><p id="detail-subtitle">Origem e metadados do arquivo</p></div><div class="detail-actions"><button class="button button-ghost" id="export-current-plan-btn">Exportar este plano</button><button class="button button-ghost" id="delete-document-btn">Excluir plano</button><button class="button button-primary" id="save-document-btn">Salvar alterações</button></div></div>
           <div class="detail-layout">
             <aside class="detail-sidebar panel">
               <div class="file-preview"><div class="pdf-tile">PDF</div><div><strong id="side-filename">arquivo.pdf</strong><small id="side-filemeta">Documento importado</small></div></div>
@@ -125,7 +126,7 @@
             <div class="detail-content">
               <section class="detail-pane active" id="pane-structured">
                 <div class="panel form-panel"><div class="panel-heading"><div><div class="eyebrow">IDENTIFICAÇÃO</div><h3>Dados do plano</h3></div><span class="auto-tag">✦ Extração assistida</span></div><div id="metadata-form" class="form-grid"></div></div>
-                <div class="panel items-panel"><div class="panel-heading"><div><div class="eyebrow">DEMANDAS IDENTIFICADAS</div><h3>Itens e serviços</h3></div><button class="button button-quiet button-small" id="add-demand-btn">＋ Adicionar item</button></div><div class="table-scroll"><table class="data-table"><thead><tr><th style="width:48px">Item</th><th>Descrição original / padronizada</th><th style="width:160px">Categoria</th><th style="width:92px">Unidade</th><th style="width:86px">Qtd.</th><th style="width:110px">Valor unit.</th><th style="width:110px">Valor total</th><th style="width:70px">Origem</th><th></th></tr></thead><tbody id="demands-table-body"></tbody></table></div><div id="no-demands" class="table-empty" hidden>Nenhum item tabular foi identificado automaticamente. Você pode inserir as demandas manualmente ou revisar o conteúdo bruto.</div></div>
+                <div class="panel items-panel"><div class="panel-heading"><div><div class="eyebrow">DEMANDAS IDENTIFICADAS</div><h3>Itens e serviços</h3></div><button class="button button-quiet button-small" id="add-demand-btn">＋ Adicionar item</button></div><p class="calc-helper"><strong>Cálculo vinculado:</strong> ao preencher quantidade e valor unitário, o valor total é atualizado automaticamente. Valores transcritos ou confirmados manualmente são preservados e sinalizados quando divergirem do cálculo.</p><div class="table-scroll"><table class="data-table"><thead><tr><th style="width:48px">Item</th><th>Descrição original / padronizada</th><th style="width:160px">Categoria</th><th style="width:92px">Unidade</th><th style="width:86px">Qtd.</th><th style="width:110px">Valor unit.</th><th style="width:110px">Valor total</th><th style="width:70px">Origem</th><th></th></tr></thead><tbody id="demands-table-body"></tbody></table></div><div id="no-demands" class="table-empty" hidden>Nenhum item tabular foi identificado automaticamente. Você pode inserir as demandas manualmente ou revisar o conteúdo bruto.</div></div>
                 <div class="panel extra-fields-panel"><div class="panel-heading"><div><div class="eyebrow">INFORMAÇÕES COMPLEMENTARES</div><h3>Campos adicionais preservados</h3></div><button class="button button-quiet button-small" id="add-extra-btn">＋ Adicionar campo</button></div><div id="extra-fields-list"></div></div>
               </section>
               <section class="detail-pane" id="pane-raw"><div class="panel raw-panel"><div class="panel-heading"><div><div class="eyebrow">FONTE ORIGINAL</div><h3>Texto extraído do PDF</h3></div><button class="button button-quiet button-small" id="copy-raw-btn">Copiar texto</button></div><div class="raw-warning"><span>i</span><p>O texto abaixo é a camada textual extraída do PDF. A disposição visual, tabelas e imagens podem não ser reproduzidas exatamente.</p></div><pre id="raw-content" class="raw-text"></pre></div></section>
@@ -143,7 +144,10 @@
   <div id="modal-root"></div>
 
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script defer src="xlsx-export.js"></script>
+  <script defer src="catalogo-itens.js"></script>
   <script defer src="app.js"></script>
   <script defer src="plano.js"></script>
+  <script defer src="dashboard.js"></script>
 </body>
 </html>
