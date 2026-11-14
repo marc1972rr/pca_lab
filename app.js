@@ -701,4 +701,5 @@
     if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('./sw.js').catch(() => {});
   }
   document.addEventListener('DOMContentLoaded',init);
+  window.PCA={ws:()=>workspace,save:scheduleSave,toast,esc:escapeHtml,num:parseBrazilianNumber,money:formatMoney,sim:getSimilarGroups,log:recordActivity,doc:getDoc,render:renderAll,uid};
 })();
