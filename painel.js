@@ -46,7 +46,7 @@ add(['TIPO DE ITEM','ELEMENTO DE DESPESA','FONTE','QUANTIDADE DE ITENS','NOVA CO
 let tq=0,tn=0,tr=0;
 TG.forEach((tp,gi)=>{const g=rows.filter(x=>x.tipo===tp);if(!tp&&!g.length)return;const a=g.filter(x=>!x.rn).reduce((s,x)=>s+x.v,0),b=g.filter(x=>x.rn).reduce((s,x)=>s+x.v,0),z=gi%2;tq+=g.length;tn+=a;tr+=b;add([[0,tp||'A CLASSIFICAR',5+z],[1,uq(g.map(x=>x.elem)),5+z],[2,uq(g.map(x=>x.fonte)),5+z],[3,g.length,7+z],[4,a,9+z],[5,b,9+z],[6,a+b,9+z]])});
 n=add([[0,'TOTAL',11],[1,'',11],[2,'',11],[3,tq,11],[4,tn,12],[5,tr,12],[6,tn+tr,12]]);mg.push(`A${n}:C${n}`);
-const sect=(t,ren)=>{bar(t,2,22);TG.forEach((tp,i)=>{const g=rows.filter(x=>x.tipo===tp&&x.rn===ren);if(!tp&&!g.length)return;bar(`${ren?4:3}.${i+1} ${tp||'ITENS SEM TIPO OFICIAL — CLASSIFICAR ANTES DE CONSOLIDAR'}`,3,20);add((ren?H2:H1).map((t,k)=>[k,t,4]),48);
+const sect=(t,ren)=>{bar(t,2,22);TG.forEach((tp,i)=>{const g=rows.filter(x=>x.tipo===tp&&x.rn===ren);if(!tp&&!g.length)return;bar(`${ren?4:3}.${i+1} ${tp||'ITENS SEM TIPO OFICIAL — CLASSIFICAR ANTES DE CONSOLIDAR'}`,3,20);add((ren?H2:H1).map((t,k)=>[k,t,4]),62);
 const a=r+1;g.forEach((x,j)=>{const z=j%2;add([[0,x.ug,5+z],[1,x.tipo,5+z],[2,x.fonte,5+z],[3,x.elem,5+z],[4,x.un,5+z],[5,isFinite(x.q)?x.q:String(x.d.quantidade||''),7+z],[6,x.desc,5+z],[7,x.just,5+z],[8,x.hasV?x.v:'',9+z],[9,x.pr,7+z],[10,x.dt,7+z],[11,x.cor,5+z],[12,x.pg,5+z]])});
 if(!g.length){const m=add([[0,'— sem itens nesta categoria —',14],...fill(14,1)]);mg.push(`A${m}:M${m}`)}
 const b=r,tt=g.reduce((s,x)=>s+x.v,0),m=add([[0,'VALOR TOTAL',11],...Array.from({length:7},(_,k)=>[k+1,'',11]),[8,g.length?{f:`SUM(I${a}:I${b})`,v:tt}:0,12]]);mg.push(`A${m}:H${m}`)})};

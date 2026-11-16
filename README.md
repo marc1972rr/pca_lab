@@ -1,27 +1,10 @@
-# PCA Lab — protótipo de planejamento de contratações
+# PCA Lab 0.3.0
 
-Aplicação demonstrativa estática para receber PDFs de planos departamentais, extrair texto no navegador, sugerir campos padronizados, preservar trechos não classificados e permitir revisão humana.
+Protótipo estático para receber planos setoriais em PDF, preservar a fonte, estruturar demandas, permitir revisão gerencial e apoiar a consolidação dos dados de planejamento.
 
-## O que já funciona nesta demonstração
+## Iniciar localmente
 
-- Upload de um ou vários PDFs, inclusive por arrastar e soltar.
-- Extração de texto por página com PDF.js (para PDFs que possuem camada textual).
-- Sugestão heurística de metadados e linhas de itens.
-- Edição dos dados do plano e dos itens, mantendo a descrição original visível.
-- Visualização do texto bruto extraído por página.
-- Área de trechos não mapeados, com opção de promover para campo complementar ou marcar como revisado.
-- Auditoria preliminar de campos ausentes e cálculos simples.
-- Identificação de descrições repetidas/semelhantes entre documentos.
-- Salvamento local com IndexedDB e fallback básico em localStorage.
-- Exportação do workspace completo para JSON e importação posterior, com opção de acrescentar ou substituir.
-- Service Worker para cache do shell estático do app.
-- Dados fictícios de demonstração por meio do botão **Carregar exemplo**.
-
-## Como testar localmente
-
-Não abra `index.html` diretamente pelo protocolo `file://`, pois o Service Worker e alguns recursos do navegador exigem HTTP/HTTPS.
-
-Com Python instalado, na pasta `pca-lab`, execute:
+O projeto não precisa de backend nem de instalação de dependências npm. É necessário servir os arquivos por HTTP para habilitar IndexedDB e Service Worker:
 
 ```bash
 python -m http.server 8000
@@ -29,44 +12,83 @@ python -m http.server 8000
 
 Abra `http://localhost:8000` no navegador.
 
-Também é possível usar a extensão Live Server do VS Code.
+Também pode ser publicado diretamente no GitHub Pages: envie todos os arquivos e pastas deste pacote para a raiz (ou para a pasta configurada como origem do Pages) e habilite Pages nas configurações do repositório. Os caminhos são relativos para permitir publicação em subdiretório.
 
-## Como publicar no GitHub Pages
+## Funcionalidades desta versão
 
-1. Crie um repositório GitHub e envie todos os arquivos desta pasta para a raiz do repositório.
-2. Acesse **Settings → Pages**.
-3. Em **Build and deployment**, escolha **Deploy from a branch**.
-4. Selecione a branch principal e a pasta `/ (root)`.
-5. Salve e aguarde a publicação do Pages.
+- Recepção de múltiplos PDFs por seleção ou arrastar e soltar.
+- Extração da camada textual usando PDF.js e agrupamento heurístico de linhas.
+- OCR experimental em português sob demanda para documentos sem camada textual, utilizando Tesseract.js.
+- Campos padronizados e itens editáveis, preservando descrição, unidade, linha e página de origem.
+- Sugestões de um catálogo local demonstrativo, com aliases, categorias e unidades canônicas. IDs `LOCAL-*` são identificadores internos; não são códigos CATMAT/CATSER oficiais.
+- Cálculo vinculado em tempo real: quantidade × valor unitário = valor total calculado. A interface explica a relação entre os campos; o total transcrito do PDF ou digitado manualmente é preservado e comparado, com opção explícita de aplicar o cálculo quando houver divergência.
+- Proveniência básica de campos e itens, histórico de alterações e revisão individual.
+- Aba de conteúdo bruto, trechos não classificados e verificações preliminares.
+- Comparação textual aproximada entre demandas, como sugestão para análise do gestor.
+- Dashboard com indicadores, distribuição das demandas, revisão, categorias, valores e integridade dos documentos.
+- Central de exportação com três modos: prévia das planilhas Excel, prévia tabular dos dados estruturados que integram o JSON e visualização do JSON técnico; tabelas paginadas com todas as linhas navegáveis. Exportação abrange o workspace ou somente o plano aberto.
+- Exportação `.xlsx` sem biblioteca externa, com oito abas: `PCA Consolidado`, `Orçamentos`, `Planos`, `Não Mapeados`, `Campos Extras`, `Auditoria`, `Histórico` e `Texto Bruto`.
+- Fórmula Excel na coluna de valor calculado, congelamento do cabeçalho, filtros e formatação básica.
+- Exportação/importação JSON do workspace; o PDF original é incluído no JSON apenas quando sua preservação foi possível.
+- Persistência local via IndexedDB, com fallback em localStorage.
+- PWA/Service Worker para cache do shell estático e cache em runtime das dependências externas após carregamento online.
 
-Os caminhos utilizados são relativos para permitir publicação tanto na raiz quanto em `https://usuario.github.io/nome-do-repositorio/`.
+## Atualizações da versão 0.3.0
 
-## Privacidade e armazenamento
+- Incluída uma terceira aba na central de exportação: **Dados completos · tabela**, para conferir dentro do aplicativo os dados organizados que compõem o JSON, antes de baixar.
+- A prévia tabular contempla metadados, demandas, campos complementares, proveniência, trechos não mapeados, texto bruto, histórico e arquivos de origem.
+- A exportação JSON de um plano individual agora recebe nome próprio, em vez de nomear o arquivo como se fosse o workspace inteiro.
+- A interface explicita o cálculo automático e deixa mais claro quando um total manual diverge do valor calculado.
+- Cache do Service Worker atualizado para impedir que versões antigas da interface permaneçam ativas.
 
-Os PDFs são lidos no próprio navegador. O texto extraído e as alterações ficam no IndexedDB do navegador, na origem do site. O conteúdo do PDF não é enviado a um backend pela aplicação.
+## Estrutura dos arquivos
 
-O protótipo carrega a biblioteca PDF.js e seu worker por CDN. Isso significa que o navegador precisa obter esses arquivos externos para realizar a leitura de novos PDFs, especialmente na primeira utilização. O Service Worker guarda o shell estático (HTML, CSS e JavaScript do app), mas esta demonstração não empacota PDF.js localmente. Para operação totalmente desconectada, coloque os arquivos de distribuição do PDF.js e do worker no repositório e ajuste as referências no `index.html` e em `app.js`.
+| Arquivo | Responsabilidade |
+|---|---|
+| `index.html` | Estrutura da aplicação e ordem dos módulos |
+| `styles.css` | Identidade visual geral e componentes compartilhados |
+| `plano.css` | Plano consolidado, dashboard, catálogo e prévia de exportação |
+| `app.js` | Estado, armazenamento, PDF, OCR, extração heurística, edição, auditoria e JSON |
+| `plano.js` | Tabela de consolidação, filtros, decisões, agrupamento e aferição preliminar de orçamento |
+| `dashboard.js` | Dashboard, prévias e organização dos dados para exportação |
+| `xlsx-export.js` | Geração local do arquivo Open XML `.xlsx` |
+| `catalogo-itens.js` | Catálogo demonstrativo e normalização de unidades |
+| `sw.js` | Cache de shell e cache runtime de dependências externas |
+| `manifest.webmanifest` | Metadados de instalação PWA |
+| `assets/` | Ícones do aplicativo |
 
-Os dados persistidos são locais ao navegador/perfil e podem ser apagados ao limpar os dados do site, trocar de dispositivo ou usar outro perfil. **Exporte regularmente o JSON como backup.** O JSON inclui o texto extraído, os dados estruturados e os campos complementares, mas não incorpora o binário original do PDF. Guarde os PDFs originais no repositório institucional apropriado.
+## Regras e cautelas importantes
 
-## Limitações conhecidas
+1. A extração é heurística. O sistema não presume que uma linha foi interpretada corretamente: é indispensável conferir os dados com o PDF original.
+2. O catálogo local oferece sugestões, não substitui especificação técnica, pesquisa de mercado nem consulta a catálogo oficial. Não preenche código CATMAT/CATSER oficial; esses campos são exportados apenas se forem informados por um responsável.
+3. O reconhecimento de tabelas com múltiplas colunas, células mescladas ou layouts irregulares ainda pode falhar. A versão atual tenta recompor descrições em várias linhas, mas não é um extrator universal de tabelas PDF.
+4. OCR depende de recursos Tesseract.js e dados de idioma em CDN na primeira utilização. O Service Worker tenta armazenar esses recursos após uma carga online, mas não há garantia de primeiro uso completamente offline.
+5. PDF.js também é carregado de CDN e fica sujeito à disponibilidade da conexão na primeira visita. Depois que os recursos foram carregados/cacheados, o leitor pode funcionar offline enquanto os recursos estiverem no cache.
+6. O binário PDF original é preservado no IndexedDB somente para arquivos de até 15 MB. Arquivos maiores ainda podem ter o texto extraído, mas o binário não é guardado pelo protótipo. O JSON pode ficar grande quando contém PDFs.
+7. Os dados permanecem no perfil do navegador e podem ser apagados pelo usuário, por políticas do navegador ou por falta de espaço. Exporte cópias JSON regularmente. Não há sincronização entre computadores, autenticação, perfis institucionais nem colaboração multiusuário.
+8. O histórico local é uma trilha auxiliar, não uma trilha formal inviolável de auditoria, pois o próprio usuário pode alterar os dados locais ou o JSON exportado.
+9. A aferição de 30% é um alerta preliminar implementado para agrupar por Unidade Gestora e exercício. Exige orçamento informado e consistente. Deve ser confirmada pela área competente diante das normas e orientações vigentes; não constitui validação orçamentária formal.
+10. A comparação de demandas usa similaridade lexical aproximada (tokens), não IA semântica. Toda sugestão de agrupamento depende de análise de especificação, unidade, qualidade, logística, mercado e estratégia de contratação.
+11. A situação “sem apontamentos automáticos” significa apenas que as regras implementadas não encontraram os alertas configurados. Não significa aprovação ou conformidade.
 
-- A extração é heurística e não usa inteligência artificial generativa.
-- PDFs digitalizados como imagem não são submetidos a OCR nesta versão; o sistema sinaliza a ausência de camada textual.
-- Tabelas com colunas complexas, células mescladas, múltiplas linhas ou descrição quebrada podem exigir correção manual.
-- A identificação de semelhanças é uma sugestão textual, não uma análise técnica definitiva de equivalência.
-- Não há login, colaboração multiusuário, integração com SEI, PNCP, CATMAT/CATSER ou sistemas orçamentários.
-- A auditoria é preliminar e não emite conclusões jurídicas nem substitui a validação do setor competente.
+## Recomendações de uso
 
-## Arquivos
+- Comece por `Carregar exemplo` para explorar as telas e exportações.
+- Teste primeiro com cópias anonimizadas de alguns PDFs representativos: PDFs textuais, tabelas multipágina e PDFs digitalizados.
+- Verifique a extração de descrição, unidade, quantidade, valor unitário e total antes de usar a planilha gerada.
+- Utilize o catálogo como sugestão e confirme os atributos técnicos; não consolide itens apenas por semelhança de nome.
+- Exporte JSON como cópia de trabalho antes de qualquer atualização ou limpeza do navegador.
 
-- `index.html` — estrutura da interface.
-- `styles.css` — identidade visual e responsividade.
-- `app.js` — leitura, normalização, revisão, armazenamento e JSON.
-- `sw.js` — cache do shell estático.
-- `manifest.webmanifest` — metadados de instalação da aplicação.
-- `PROMPT_CRIACAO_PCA_LAB.md` — prompt mestre para orientar uma versão mais completa.
+## Escopo
 
-## Recomendação para evolução
+Esta versão é uma demonstração local para validação de fluxo, interface e estrutura de dados. Não substitui sistemas oficiais, procedimentos de contratação, avaliação técnica, validação orçamentária, parecer jurídico ou decisão da autoridade competente.
 
-Antes de uso institucional, evoluir para: testes com amostras reais anonimizadas; OCR local opcional para PDFs digitalizados; schema JSON formal com migrações; catálogo institucional de itens/unidades/sinônimos; extração com confiança e proveniência por campo; e, se houver necessidade de trabalho conjunto, uma arquitetura com backend, autenticação, controle de acesso e trilha de auditoria centralizada.
+## Teste técnico rápido (opcional)
+
+Com Node.js 18 ou superior, execute:
+
+```bash
+node tests/smoke-test.cjs
+```
+
+O teste valida parsing de valores brasileiros, catálogo local, cálculos, invalidação de revisão após edição, agrupamento por ID do catálogo, regra de 30%, planilhas e fórmula XLSX. O arquivo de teste é gerado no diretório temporário do sistema.
