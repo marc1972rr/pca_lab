@@ -1,5 +1,5 @@
 /* PCA Lab 0.3.0 — cache do shell e cache em runtime das bibliotecas externas usadas pelo leitor PDF/OCR. */
-const CACHE_NAME = 'pca-lab-shell-v6';
+const CACHE_NAME = 'pca-lab-shell-v7';
 const EXTERNAL_CACHE = 'pca-lab-external-v1';
 const APP_SHELL = [
   './', './index.html', './styles.css', './plano.css', './app.js', './plano.js',
